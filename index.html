@@ -1,0 +1,397 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KASVARRA Casino — Presentación</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <!-- Reemplaza 'logo.png' con el archivo de tu logo (está al revés; la web lo corrige con CSS) -->
+      <img src="./images/image-removebg-preview (1).png" alt="Logotipo de KASVARRA" class="logo">
+      <div class="title-wrap">
+        <h1>KASVARRA</h1>
+        <p class="tag">Casino — Entretenimiento Premium</p>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="#sobre">Sobre</a>
+      <a href="#ruleta">Ruleta</a>
+      <a href="#instalaciones">Instalaciones</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="sobre" class="hero">
+      <div class="hero-content">
+        <h2>Origen y evolución</h2>
+        <p>KASVARRA surgió en 2023 por un grupo de amigos apasionados por el juego. Operamos en alianza estratégica con un hotel local (Colón y San Juan) para ofrecer entretenimiento presencial y digital de alta calidad.</p>
+        <a href="#ruleta" class="btn">Prueba suerte →</a>
+      </div>
+      <div class="hero-visual">
+        <div class="card">
+          <h3>Nuestra misión</h3>
+          <p>Ofrecer una plataforma de entretenimiento segura, confiable y accesible para mayores de 18 años.</p>
+        </div>
+        <div class="card">
+          <h3>Visión</h3>
+          <p>Ser el principal casino virtual y referente presencial de Argentina, con +10.000 jugadores activos en 2026.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="ruleta" class="section">
+      <h2>Ruleta de premios</h2>
+      <p class="muted">Gira la ruleta y gana premios reales: Play 5, sillón, cama, computadoras y más.</p>
+
+      <div class="wheel-container">
+        <div id="wheel" class="wheel" aria-hidden="true">
+          <!-- el SVG facilita secciones visibles y rotación suave -->
+          <svg viewBox="0 0 500 500" class="wheel-svg">
+            <defs>
+              <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="6" stdDeviation="10" flood-opacity="0.25"/>
+              </filter>
+            </defs>
+            <g transform="translate(250,250)">
+              <!-- Secciones: 8 premios -->
+              <g id="slices"></g>
+              <!-- center circle -->
+              <circle r="45" fill="#111" stroke="#ffd700" stroke-width="4"></circle>
+              <text x="0" y="6" text-anchor="middle" class="center-text">GIRAR</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="pointer" aria-hidden="true">▼</div>
+      </div>
+
+      <div class="controls">
+        <button id="spinBtn" class="btn primary">Girar</button>
+        <button id="fastSpinBtn" class="btn outline">Giro rápido</button>
+        <p id="result" class="result" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="instalaciones" class="section">
+      <h2>Instalaciones y servicios</h2>
+      <p>KASVARRA ofrece un local con aire acondicionado, máquinas tragamonedas, mesas de apuestas, servidores dedicados y atención técnica continua. Además, ofrecemos opciones de retiro en caja, transferencias y retiros a domicilio, con verificación de identidad.</p>
+
+      <div class="grid">
+        <article class="feature">
+          <h3>Premios exclusivos</h3>
+          <ul>
+            <li>Play 5 (consola)</li>
+            <li>Computadoras de alto rendimiento</li>
+            <li>Mobiliario (sillones, camas)</li>
+            <li>Viajes y experiencias</li>
+          </ul>
+        </article>
+        <article class="feature">
+          <h3>Innovación financiera</h3>
+          <p>Invertimos en bonos y ofrecemos la opción de invertir parte de los fondos en criptomonedas (según regulación aplicable).</p>
+        </article>
+        <article class="feature">
+          <h3>Compromiso social</h3>
+          <p>2% de todos los retiros se donan a organizaciones benéficas elegidas por los usuarios cada mes.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="contacto" class="section contact">
+      <h2>Contacto</h2>
+      <p>Dirección: Colón y San Juan (sede conectada al hotel asociado). Para consultas y alianzas: <a href="mailto:info@kasvarra.com">info@kasvarra.com</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© KASVARRA 2025 — Solo para mayores de 18 años. Juego responsable.</p>
+  </footer>
+
+  <!-- Script: crea las secciones de la ruleta y gestiona la animación -->
+  <script>
+    // Premios (en el mismo orden que las secciones de la ruleta)
+    const prizes = [
+      'Play 5',
+      'Sillón premium',
+      'Cama king',
+      'Computadora gaming',
+      'Viaje sorpresa',
+      'Bonos de apuesta',
+      'Pulsera VIP',
+      'Consola retro'
+    ];
+
+    // dibuja las secciones en el SVG
+    (function drawWheel(){
+      const slicesGroup = document.getElementById('slices');
+      const r = 230; // radio
+      const angle = 360 / prizes.length;
+      for(let i=0;i<prizes.length;i++){
+        const start = (i * angle) * Math.PI/180;
+        const end = ((i+1) * angle) * Math.PI/180;
+        const x1 = Math.cos(start) * r;
+        const y1 = Math.sin(start) * r;
+        const x2 = Math.cos(end) * r;
+        const y2 = Math.sin(end) * r;
+        const large = 0;
+        const path = `M 0 0 L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
+        const color = i % 2 === 0 ? '#1a1a1a' : '#111';
+        const textAngle = (i + 0.5) * angle;
+
+        const slice = document.createElementNS('http://www.w3.org/2000/svg','path');
+        slice.setAttribute('d', path);
+        slice.setAttribute('fill', color);
+        slice.setAttribute('stroke', '#ffd700');
+        slice.setAttribute('stroke-width', '1');
+        slice.setAttribute('transform', 'rotate(0)');
+
+        slicesGroup.appendChild(slice);
+
+        // etiqueta
+        const tx = Math.cos((textAngle) * Math.PI/180) * (r*0.65);
+        const ty = Math.sin((textAngle) * Math.PI/180) * (r*0.65);
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x', tx.toFixed(2));
+        t.setAttribute('y', ty.toFixed(2));
+        t.setAttribute('text-anchor','middle');
+        t.setAttribute('transform', `rotate(${textAngle}, ${tx}, ${ty})`);
+        t.setAttribute('class','slice-text');
+        t.textContent = prizes[i];
+        slicesGroup.appendChild(t);
+      }
+    })();
+
+    // lógica de giro
+    const wheelEl = document.querySelector('.wheel-svg');
+    const spinBtn = document.getElementById('spinBtn');
+    const fastSpinBtn = document.getElementById('fastSpinBtn');
+    const resultEl = document.getElementById('result');
+
+    let spinning = false;
+
+    function spin(randomExtra = 0){
+      if(spinning) return;
+      spinning = true;
+      resultEl.textContent = '';
+
+      const slices = prizes.length;
+      // elige un índice aleatorio
+      const chosenIndex = Math.floor(Math.random() * slices);
+
+      // calculamos un ángulo objetivo: que la sección elegida quede en el tope (pointer) arriba.
+      const sliceAngle = 360 / slices;
+      // ángulo para alinear la sección elegida con el pointer (0º arriba en our coordinate system)
+      const needed = 360 - (chosenIndex * sliceAngle) - (sliceAngle/2);
+
+      // número de vueltas completas y algo de azar
+      const rounds = 4 + Math.floor(Math.random()*3) + randomExtra; // 4..8
+      const finalAngle = rounds*360 + needed;
+
+      wheelEl.style.transition = 'transform 5s cubic-bezier(.1,.9,.2,1)';
+      wheelEl.style.transform = `rotate(${finalAngle}deg)`;
+
+      wheelEl.addEventListener('transitionend', function handler(){
+        wheelEl.style.transition = 'none';
+        // mantén la rueda en el ángulo final modulo 360 para evitar overflow
+        const kept = finalAngle % 360;
+        wheelEl.style.transform = `rotate(${kept}deg)`;
+        spinning = false;
+        const prize = prizes[chosenIndex];
+        resultEl.textContent = `¡Ganaste: ${prize}!`;
+        announcePrize(prize);
+        wheelEl.removeEventListener('transitionend', handler);
+      });
+    }
+
+    function announcePrize(prize){
+      // simple modal / notificación
+      alert('¡Felicidades! Ganaste: ' + prize);
+    }
+
+    spinBtn.addEventListener('click', ()=> spin(0));
+    fastSpinBtn.addEventListener('click', ()=> spin(2));
+
+    // accesibilidad: permitir girar con tecla Enter cuando se enfoca el botón
+  </script>
+</body>
+</html>
+
+
+<style>
+
+    /* styles.css corregido */
+
+:root{
+  --bg: #0b0b0d;
+  --panel: #0f1720;
+  --accent: #ffd700;
+  --muted: #9aa3ad;
+  --glass: rgba(255,255,255,0.03);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html, body{
+  height:100%;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: radial-gradient(circle at top, #1a1a1f 0%, #0b0b0d 100%);
+  color:#e6eef6;
+  line-height:1.5;
+}
+
+/* ----- Header ----- */
+.site-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 28px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(11,11,13,0.9);
+  backdrop-filter:blur(6px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:64px;height:64px;object-fit:contain;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,0.6));
+  transform:rotate(180deg); /* Corrige logo al revés */
+}
+.title-wrap h1{margin:0;font-size:22px;letter-spacing:2px}
+.title-wrap .tag{margin:0;font-size:13px;color:var(--muted)}
+.nav a{
+  color:var(--muted);
+  text-decoration:none;
+  margin-left:14px;
+  transition:color .2s;
+}
+.nav a:hover{color:var(--accent)}
+
+/* ----- Secciones ----- */
+.hero{
+  display:flex;
+  flex-wrap:wrap;
+  gap:28px;
+  padding:48px 28px;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.hero-content{flex:1;min-width:250px}
+.hero-visual{flex:1;min-width:280px;display:flex;flex-direction:column;gap:12px}
+.card{
+  background:var(--glass);
+  padding:14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.04);
+}
+.btn{
+  display:inline-block;
+  padding:10px 18px;
+  border-radius:10px;
+  background:transparent;
+  color:var(--accent);
+  border:1px solid rgba(255,215,0,0.2);
+  cursor:pointer;
+  text-decoration:none;
+  transition:all .2s;
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.2)}
+.btn.primary{background:linear-gradient(90deg,#ffd700,#ffdd55);color:#0b0b0d;border:none;font-weight:600}
+.btn.outline{background:transparent;border:1px solid rgba(255,215,0,0.3)}
+
+/* ----- Ruleta ----- */
+.section{padding:40px 28px;text-align:center}
+.muted{color:var(--muted)}
+
+.wheel-container{
+  display:flex;
+  align-items:center;
+  flex-direction:column;
+  gap:10px;
+  margin-top:20px;
+}
+.wheel{
+  width:360px;
+  height:360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:radial-gradient(circle at center,#111 0%, #000 100%);
+  border-radius:50%;
+}
+.wheel-svg{
+  width:100%;
+  height:100%;
+  transform-origin:center center;
+}
+.pointer{
+  font-size:28px;
+  color:var(--accent);
+  margin-top:-6px;
+}
+.slice-text{
+  font-size:13px;
+  fill:#ffe46b; /* Color más visible */
+  font-weight:700;
+  pointer-events:none;
+  text-shadow:0 0 4px rgba(0,0,0,0.6);
+}
+.center-text{
+  fill:#ffd700;
+  font-weight:700;
+  font-size:18px;
+}
+
+.controls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin-top:16px;
+}
+.result{
+  min-height:24px;
+  color:#b8fca9;
+  font-weight:600;
+  text-shadow:0 0 4px rgba(0,0,0,0.4);
+  margin-top:10px;
+}
+
+/* ----- Sección de servicios ----- */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+  margin-top:20px;
+}
+.feature{
+  background:var(--panel);
+  padding:18px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.05);
+  text-align:left;
+}
+
+/* ----- Footer ----- */
+.site-footer{
+  padding:18px;
+  text-align:center;
+  color:var(--muted);
+  border-top:1px solid rgba(255,255,255,0.02);
+}
+.contact a{color:var(--accent)}
+
+/* ----- Responsive ----- */
+@media(max-width:900px){
+  .hero{flex-direction:column}
+  .logo{width:56px;height:56px}
+  .wheel{width:300px;height:300px}
+}
+
+</style>
